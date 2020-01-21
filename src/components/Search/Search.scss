@@ -1,0 +1,23 @@
+.search{
+  width: 100%;
+  .MuiFormControl-root{
+    width: 100%;
+  }
+}
+[id^=search__list]{
+  li{
+    padding: 0;
+    .search__item{
+      display: block;
+      padding: 6px 16px;
+      width: 100%;
+      text-decoration: none;
+      color: inherit;
+      text-align: left;
+    }
+  }
+}
+#search__list-night-popup{
+  background-color: #181818;
+  color: #e6e6e6;
+}
