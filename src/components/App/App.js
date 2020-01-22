@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {fetchData, getAvailableCities} from "../../store/actions/weather";
+import {fetchCitiesJson, fetchData, getAvailableCities} from "../../store/actions/weather";
 import {connect} from 'react-redux'
 import Loader from "../Loader/Loader";
 import Tabs from '@material-ui/core/Tabs';
@@ -108,6 +108,7 @@ class App extends React.Component {
   };
 
   async componentDidMount() {
+    this.props.fetchCitiesJson();
     await this.props.fetchData(this.state.location);
     this.fillState();
   }
@@ -173,7 +174,7 @@ class App extends React.Component {
        <div className={"widget ".concat(...background)}>
          <Search
            defaultValue={location}
-           citiesList={this.props.citiesList}
+           filteredCitiesList={this.props.filteredCitiesList}
            getAvailableCities={this.props.getAvailableCities}
            changeLocation={this.changeLocation}
          />
@@ -240,13 +241,14 @@ const mapStateToProps = state => {
   return {
     data: state.weather.data,
     img: state.weather.img,
-    citiesList: state.weather.citiesList,
+    filteredCitiesList: state.weather.filteredCitiesList,
   }
 };
 
 const mapDispatchToProps = {
   fetchData: fetchData,
-  getAvailableCities: getAvailableCities
+  getAvailableCities: getAvailableCities,
+  fetchCitiesJson: fetchCitiesJson
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

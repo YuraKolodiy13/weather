@@ -1,9 +1,10 @@
-import {GET_AVAILABLE_CITIES, GET_WEATHER_START, GET_WEATHER_SUCCESS} from "../actions/actionType";
+import {GET_AVAILABLE_CITIES, GET_CITIES_JSON, GET_WEATHER_START, GET_WEATHER_SUCCESS} from "../actions/actionType";
 
 const initialState = {
   data: {},
   img: null,
-  citiesList: []
+  citiesList: [],
+  filteredCitiesList: []
 };
 
 const weather = (state = initialState, action) => {
@@ -20,10 +21,16 @@ const weather = (state = initialState, action) => {
         img: action.payload[1],
         loading: false
       };
+    case GET_CITIES_JSON:
+      return {
+        ...state,
+        citiesList: action.payload
+      };
     case GET_AVAILABLE_CITIES:
       return {
         ...state,
-        citiesList: Array.from(action.payload)
+        // citiesList: Array.from(action.payload)
+        filteredCitiesList: action.payload
       };
 
     default:

@@ -1,7 +1,6 @@
 import axios from "axios/index";
-import {GET_AVAILABLE_CITIES, GET_WEATHER_START, GET_WEATHER_SUCCESS} from "./actionType";
-import cities from '../../components/App/city.list.min'
-
+import {GET_AVAILABLE_CITIES, GET_CITIES_JSON, GET_WEATHER_START, GET_WEATHER_SUCCESS} from "./actionType";
+import store from '../store'
 export const fetchData = city => async dispatch => {
   dispatch({
     type: GET_WEATHER_START
@@ -30,21 +29,29 @@ export const fetchData = city => async dispatch => {
     payload: payload
   })
 };
+export const fetchCitiesJson = () => async dispatch => {
+  let citiesList = await axios.get('https://raw.githubusercontent.com/YuraKolodiy13/weather/master/src/components/App/city.list.min.json');
+  dispatch({
+    type: GET_CITIES_JSON,
+    payload: citiesList.data
+  })
+};
 
 export const getAvailableCities = query => async dispatch => {
-  if(query.length > 2){
-    let citiesList = await new Promise((resolve, reject) => {
-      setTimeout(() => resolve(cities), 4)
-      // reject('error')
-    });
+  let filteredCitiesList = store.getState().weather.citiesList;
+  if(query.length >= 3){
+    if(filteredCitiesList[0].name){
+      filteredCitiesList = Array.from(new Set(filteredCitiesList.map(item => item.name)));
+    }
+    console.log(JSON.stringify(filteredCitiesList));
     query = query[0].toUpperCase() + query.slice(1);
-    citiesList = citiesList.filter(city => {
-      return city.name.startsWith(query)
+    filteredCitiesList = filteredCitiesList.filter(city => {
+      return city.startsWith(query)
     });
-    citiesList = new Set(citiesList.map(item => item.name));
+
     dispatch({
       type: GET_AVAILABLE_CITIES,
-      payload: citiesList
+      payload: filteredCitiesList
     })
   }
-}
+};
