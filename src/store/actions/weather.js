@@ -21,8 +21,7 @@ export const fetchData = city => async dispatch => {
     console.log(e)
   }
 
-
-  let payload = cityData ? [res.data, cityData.data.photos[0].image.web] : [res.data];
+  let payload = cityData ? [res.data, cityData.data.photos[0].image.mobile] : [res.data];
 
   dispatch({
     type: GET_WEATHER_SUCCESS,
@@ -30,7 +29,7 @@ export const fetchData = city => async dispatch => {
   })
 };
 export const fetchCitiesJson = () => async dispatch => {
-  let citiesList = await axios.get('https://raw.githubusercontent.com/YuraKolodiy13/weather/master/src/components/App/city.list.min.json');
+  let citiesList = await axios.get('https://raw.githubusercontent.com/YuraKolodiy13/weather/master/src/components/App/cities.json');
   dispatch({
     type: GET_CITIES_JSON,
     payload: citiesList.data
@@ -40,11 +39,7 @@ export const fetchCitiesJson = () => async dispatch => {
 export const getAvailableCities = query => async dispatch => {
   let filteredCitiesList = store.getState().weather.citiesList;
   if(query.length >= 3){
-    if(filteredCitiesList[0].name){
-      filteredCitiesList = Array.from(new Set(filteredCitiesList.map(item => item.name)));
-    }
-    console.log(JSON.stringify(filteredCitiesList));
-    query = query[0].toUpperCase() + query.slice(1);
+    query = query.split(' ').length === 1 ? query[0].toUpperCase() + query.slice(1) : query.split(' ').map(item => item ? item[0].toUpperCase() + item.slice(1) : '').join(' ');
     filteredCitiesList = filteredCitiesList.filter(city => {
       return city.startsWith(query)
     });
@@ -52,6 +47,11 @@ export const getAvailableCities = query => async dispatch => {
     dispatch({
       type: GET_AVAILABLE_CITIES,
       payload: filteredCitiesList
+    })
+  }else{
+    dispatch({
+      type: GET_AVAILABLE_CITIES,
+      payload: []
     })
   }
 };
